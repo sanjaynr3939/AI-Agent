@@ -1,0 +1,4 @@
+aiagent.env
+memory.db
+__pycache__/
+*.pyc

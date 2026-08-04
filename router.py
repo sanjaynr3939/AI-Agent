@@ -12,15 +12,21 @@ def route_query(user):
     if intent == "GREETING":
         return "Hello Sanjay! 👋"
 
-    if intent in TOOLS:
+    tool_info = TOOLS.get(intent)
 
-        tool = TOOLS[intent]
+    if not tool_info:
+        return generate_response(user)
 
-    if intent == "CSV":
-        return tool("employees.csv", user)
+    tool = tool_info["function"]
+    args = tool_info["args"]
 
-    elif intent in ["TIME", "DATE"]:
+    if args == 0:
         return tool()
 
-    else:
+    elif args == 1:
         return tool(user)
+
+    elif args == 2:
+        return tool("employees.csv", user)
+
+    return generate_response(user)

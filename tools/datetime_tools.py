@@ -32,3 +32,6 @@ def get_current_date() -> str:
     """
     
     return datetime.now().strftime("%d-%m-%Y")
+
+def get_current_day():
+    return datetime.now().strftime("%A")

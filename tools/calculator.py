@@ -1,39 +1,46 @@
-import re
+from query_parser.parser import parse_query
 
-def calculate(text):
 
-    text = text.lower()
+def calculate(user):
 
-    try:
+    parsed = parse_query(user)
 
-        # sum of 3 and 5
-        m = re.search(r"sum of (\d+) and (\d+)", text)
-        if m:
-            return f"The answer is {int(m.group(1)) + int(m.group(2))}"
+    numbers = parsed["numbers"]
+    operation = parsed["operation"]
+    words = parsed["words"]
 
-        # multiply 5 by 8
-        m = re.search(r"multiply (\d+) by (\d+)", text)
-        if m:
-            return f"The answer is {int(m.group(1)) * int(m.group(2))}"
-
-        # divide 20 by 4
-        m = re.search(r"divide (\d+) by (\d+)", text)
-        if m:
-            return f"The answer is {int(m.group(1)) / int(m.group(2))}"
-
-        # subtract 8 from 20
-        m = re.search(r"sub(?:tract)? of (\d+) and (\d+)", text)
-        if m:
-            return f"The answer is {int(m.group(1)) - int(m.group(2))}"
-
-        # Normal expression (4+7)
-        m = re.search(r"\d+\s*[\+\-\*/%]\s*\d+", text)
-
-        if m:
-            expression = m.group()
-            return f"The answer is {eval(expression)}"
-
+    if len(numbers) < 2:
         return None
 
-    except Exception:
-        return None
+    a = int(numbers[0])
+    b = int(numbers[1])
+
+    if operation == "ADD":
+        return f"The answer is {a + b}"
+
+    elif operation == "SUBTRACT":
+
+        # Handle: subtract 3 from 9
+        if "from" in words:
+            return f"The answer is {b - a}"
+
+        return f"The answer is {a - b}"
+
+    elif operation == "MULTIPLY":
+        return f"The answer is {a * b}"
+
+    elif operation == "DIVIDE":
+
+        if b == 0:
+            return "Cannot divide by zero."
+
+        return f"The answer is {a / b}"
+
+    elif operation == "MOD":
+
+        if b == 0:
+            return "Cannot divide by zero."
+
+        return f"The answer is {a % b}"
+
+    return None

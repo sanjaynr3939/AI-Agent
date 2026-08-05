@@ -35,17 +35,69 @@ OPERATIONS = {
 
 }
 
+CSV_ACTIONS = {
+
+    "highest": [
+        "highest",
+        "maximum",
+        "top",
+        "most",
+        "best"
+    ],
+
+    "lowest": [
+        "lowest",
+        "minimum",
+        "least"
+    ],
+
+    "average": [
+        "average",
+        "mean"
+    ],
+
+    "total": [
+        "total",
+        "sum"
+    ]
+
+}
+
+CSV_COLUMNS = {
+
+    "salary": [
+        "salary",
+        "paid",
+        "pay",
+        "income"
+    ],
+
+    "employee": [
+        "employee",
+        "employees"
+    ],
+
+    "department": [
+        "department"
+    ]
+
+}
 
 def parse_query(text):
 
     text = text.lower()
 
     result = {
-        "numbers": [],
-        "operators": [],
-        "words": [],
-        "operation": None
-    }
+
+    "numbers": [],
+    "operators": [],
+    "words": [],
+    "operation": None,
+
+    "action": None,
+    "column": None
+
+}
 
     # Extract numbers
     result["numbers"] = re.findall(r"\d+", text)
@@ -90,6 +142,40 @@ def parse_query(text):
 
             if result["operation"]:
 
+                break
+
+
+        # -----------------------------
+        # Detect CSV Action
+        # -----------------------------
+
+        for action, keywords in CSV_ACTIONS.items():
+
+            for keyword in keywords:
+
+                if keyword in result["words"]:
+
+                    result["action"] = action
+                    break
+
+            if result["action"]:
+                break
+
+
+        # -----------------------------
+        # Detect CSV Column
+        # -----------------------------
+
+        for column, keywords in CSV_COLUMNS.items():
+
+            for keyword in keywords:
+
+                if keyword in result["words"]:
+
+                    result["column"] = column
+                    break
+
+            if result["column"]:
                 break
 
     return result

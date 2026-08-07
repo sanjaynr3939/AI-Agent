@@ -83,6 +83,15 @@ CSV_COLUMNS = {
 
 }
 
+DEPARTMENTS = [
+
+    "it",
+    "hr",
+    "sales",
+    "finance"
+
+]
+
 def parse_query(text):
 
     text = text.lower()
@@ -95,8 +104,8 @@ def parse_query(text):
     "operation": None,
 
     "action": None,
-    "column": None
-
+    "column": None,
+    "value": None
 }
 
     # Extract numbers
@@ -176,6 +185,20 @@ def parse_query(text):
                     break
 
             if result["column"]:
+                break
+
+        # -----------------------------
+        # Detect Department
+        # -----------------------------
+
+        for department in DEPARTMENTS:
+
+            if department in result["words"]:
+
+                result["action"] = "filter"
+                result["column"] = "department"
+                result["value"] = department.upper()
+
                 break
 
     return result

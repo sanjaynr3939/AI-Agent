@@ -1,4 +1,5 @@
 import pandas as pd
+from query_parser.parser import parse_query
 
 # -----------------------------
 # Keyword Groups
@@ -68,10 +69,12 @@ def analyze_csv(file_path, question):
     df = pd.read_csv(file_path)
 
     question = question.lower()
+    parsed = parse_query(question)
+    
 
     has_salary = contains_any(question, SALARY_WORDS)
     has_employee = contains_any(question, EMPLOYEE_WORDS)
-    has_high = contains_any(question, HIGH_WORDS)
+    parsed = parse_query(question)
     has_low = contains_any(question, LOW_WORDS)
     has_average = contains_any(question, AVERAGE_WORDS)
     has_total = contains_any(question, TOTAL_WORDS)
@@ -80,7 +83,11 @@ def analyze_csv(file_path, question):
     # Highest Salary
     # -------------------------
 
-    if has_high and (has_salary or has_employee):
+    if (
+        parsed["action"] == "highest"
+        and
+        parsed["column"] == "salary"
+    ):
 
         employee = df.loc[df["Salary"].idxmax()]
 
@@ -89,11 +96,15 @@ def analyze_csv(file_path, question):
             f'with a salary of ₹{employee["Salary"]}.'
         )
 
-    # -------------------------
-    # Lowest Salary
-    # -------------------------
+        # -------------------------
+        # Lowest Salary
+        # -------------------------
 
-    if has_low and (has_salary or has_employee):
+    if (
+        parsed["action"] == "lowest"
+        and
+        parsed["column"] == "salary"
+    ):
 
         employee = df.loc[df["Salary"].idxmin()]
 
@@ -106,21 +117,48 @@ def analyze_csv(file_path, question):
     # Average Salary
     # -------------------------
 
-    if has_average and has_salary:
+    if (
+        parsed["action"] == "average"
+        and
+        parsed["column"] == "salary"
+    ):
 
         average = df["Salary"].mean()
 
         return f"The average salary is ₹{average:.2f}."
-
     # -------------------------
     # Total Salary
     # -------------------------
 
-    if has_total and has_salary:
+    if (
+        parsed["action"] == "total"
+        and
+        parsed["column"] == "salary"
+    ):
 
         total = df["Salary"].sum()
 
         return f"The total salary is ₹{total}."
+    
+
+    # -------------------------
+    # Department Filter
+    # -------------------------
+
+    if (
+        parsed["action"] == "filter"
+        and
+        parsed["column"] == "department"
+    ):
+
+        filtered = df[
+            df["Department"].str.upper() == parsed["value"]
+        ]
+
+        if filtered.empty:
+            return "No employees found."
+
+        return filtered.to_string(index=False)
 
     # -------------------------
     # Summary

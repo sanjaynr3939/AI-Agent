@@ -4,7 +4,7 @@ INTENTS = {
     "GREETING": {
         "hi", "hello", "hey",
         "good morning", "good evening",
-        "bye", "thanks","Thanks","Thank you", "thank you"
+        "bye", "thanks", "thank you"
     },
 
     "TIME": {
@@ -34,8 +34,9 @@ INTENTS = {
 
     "CSV": {
         "salary", "employee",
-        "department", "income",
-        "pay", "paid", "age"
+        "employees", "department",
+        "income", "pay", "staff",
+        "paid", "age"
     },
 
     "WEB": {
@@ -43,6 +44,13 @@ INTENTS = {
         "sports", "latest",
         "current"
     }
+}
+
+DEPARTMENTS = {
+    "it",
+    "hr",
+    "sales",
+    "finance"
 }
 
 
@@ -56,6 +64,11 @@ def detect_intent(text):
 
     words = set(re.findall(r"\b\w+\b", text))
 
+    # Detect department names
+    if words & DEPARTMENTS:
+        return "CSV"
+
+    # Detect other intents
     for intent, keywords in INTENTS.items():
         if words & keywords:
             return intent

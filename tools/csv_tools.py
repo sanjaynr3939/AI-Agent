@@ -1,63 +1,10 @@
 import pandas as pd
 from query_parser.parser import parse_query
 
-# -----------------------------
-# Keyword Groups
-# -----------------------------
-
-SALARY_WORDS = [
-    "salary",
-    "pay",
-    "paid",
-    "earn",
-    "earns",
-    "earning"
-]
-
-EMPLOYEE_WORDS = [
-    "employee",
-    "employees",
-    "person",
-    "staff"
-]
-
-HIGH_WORDS = [
-    "highest",
-    "maximum",
-    "most",
-    "top",
-    "best",
-    "largest",
-    "greatest",
-    "max"
-]
-
-LOW_WORDS = [
-    "lowest",
-    "minimum",
-    "least",
-    "smallest",
-    "min",
-    "low"
-]
-
-AVERAGE_WORDS = [
-    "average",
-    "mean"
-]
-
-TOTAL_WORDS = [
-    "total",
-    "sum"
-]
 
 
-# -----------------------------
-# Helper Function
-# -----------------------------
 
-def contains_any(question, words):
-    return any(word in question for word in words)
+
 
 
 # -----------------------------
@@ -71,13 +18,6 @@ def analyze_csv(file_path, question):
     question = question.lower()
     parsed = parse_query(question)
     
-
-    has_salary = contains_any(question, SALARY_WORDS)
-    has_employee = contains_any(question, EMPLOYEE_WORDS)
-    parsed = parse_query(question)
-    has_low = contains_any(question, LOW_WORDS)
-    has_average = contains_any(question, AVERAGE_WORDS)
-    has_total = contains_any(question, TOTAL_WORDS)
 
     # -------------------------
     # Highest Salary

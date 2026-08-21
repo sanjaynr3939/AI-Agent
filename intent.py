@@ -56,21 +56,36 @@ DEPARTMENTS = {
 
 def detect_intent(text):
 
-    text = text.lower()
-
-    # Detect mathematical operators
-    if any(op in text for op in ["+", "-", "*", "/", "%"]):
-        return "MATH"
-
     words = set(re.findall(r"\b\w+\b", text))
 
-    # Detect department names
-    if words & DEPARTMENTS:
+    # Department queries
+    if (
+        ("employee" in words or
+        "employees" in words or
+        "staff" in words or
+        "department" in words)
+        and
+        words & DEPARTMENTS
+    ):
         return "CSV"
 
-    # Detect other intents
-    for intent, keywords in INTENTS.items():
-        if words & keywords:
+    # Web queries first
+    if words & INTENTS["WEB"]:
+        return "WEB"
+
+    # Time / Date / Day
+    if words & INTENTS["TIME"]:
+        return "TIME"
+
+    if words & INTENTS["DATE"]:
+        return "DATE"
+
+    if words & INTENTS["DAY"]:
+        return "DAY"
+
+    # Remaining intents
+    for intent in ["GREETING", "MATH", "MEMORY", "CSV"]:
+        if words & INTENTS[intent]:
             return intent
 
     return "GEMINI"

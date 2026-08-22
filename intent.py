@@ -56,7 +56,9 @@ DEPARTMENTS = {
 
 def detect_intent(text):
 
+    text = text.lower()
     words = set(re.findall(r"\b\w+\b", text))
+    print(words)
 
     # Department queries
     if (
@@ -68,7 +70,25 @@ def detect_intent(text):
         words & DEPARTMENTS
     ):
         return "CSV"
-
+    # Salary filter queries
+    if (
+        (
+            "employee" in words
+            or "employees" in words
+            or "staff" in words
+        )
+        and
+        (
+            "salary" in words
+            or "earn" in words
+            or "earns" in words
+            or "earning" in words
+            or "pay" in words
+            or "paid" in words
+            or "income" in words
+        )
+    ):
+        return "CSV"
     # Web queries first
     if words & INTENTS["WEB"]:
         return "WEB"

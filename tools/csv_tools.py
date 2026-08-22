@@ -19,6 +19,7 @@ def analyze_csv(file_path, question):
     parsed = parse_query(question)
     
 
+
     # -------------------------
     # Highest Salary
     # -------------------------
@@ -93,6 +94,25 @@ def analyze_csv(file_path, question):
 
         filtered = df[
             df["Department"].str.upper() == parsed["value"]
+        ]
+
+        if filtered.empty:
+            return "No employees found."
+
+        return filtered.to_string(index=False)
+
+    # -------------------------
+    # Salary Greater Than
+    # -------------------------
+
+    if (
+        parsed["column"] == "salary"
+        and
+        parsed["comparison"] == "greater_than"
+    ):
+
+        filtered = df[
+            df["Salary"] > parsed["value"]
         ]
 
         if filtered.empty:

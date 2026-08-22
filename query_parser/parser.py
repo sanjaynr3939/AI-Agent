@@ -69,7 +69,10 @@ CSV_COLUMNS = {
         "salary",
         "paid",
         "pay",
-        "income"
+        "income",
+        "earn",
+        "earns",
+        "earning"
     ],
 
     "employee": [
@@ -91,6 +94,22 @@ DEPARTMENTS = [
     "finance"
 
 ]
+COMPARISON_WORDS = {
+
+    "greater_than": [
+        "greater",
+        "more",
+        "above",
+        "over"
+    ],
+
+    "less_than": [
+        "less",
+        "below",
+        "under"
+    ]
+
+}
 
 def parse_query(text):
 
@@ -105,7 +124,8 @@ def parse_query(text):
 
     "action": None,
     "column": None,
-    "value": None
+    "comparison": None,
+    "value": None,
 }
 
     # Extract numbers
@@ -201,4 +221,26 @@ def parse_query(text):
 
                 break
 
+        # -----------------------------
+        # Detect Comparison
+        # -----------------------------
+
+        for comparison, keywords in COMPARISON_WORDS.items():
+
+            for keyword in keywords:
+
+                if keyword in result["words"]:
+
+                    result["comparison"] = comparison
+                    break
+
+            if result["comparison"]:
+                break
+        # -----------------------------
+        # Detect Filter Value
+        # -----------------------------
+
+        if result["numbers"]:
+
+            result["value"] = int(result["numbers"][0])
     return result

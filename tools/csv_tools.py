@@ -120,6 +120,25 @@ def analyze_csv(file_path, question):
 
         return filtered.to_string(index=False)
 
+        # -------------------------
+    # Salary Lesser Than
+    # -------------------------
+
+    if (
+        parsed["column"] == "salary"
+        and
+        parsed["comparison"] == "less_than"
+    ):
+
+        filtered = df[
+            df["Salary"] < parsed["value"]
+        ]
+
+        if filtered.empty:
+            return "No employees found."
+
+        return filtered.to_string(index=False)
+
     # -------------------------
     # Summary
     # -------------------------

@@ -58,7 +58,7 @@ def detect_intent(text):
 
     text = text.lower()
     words = set(re.findall(r"\b\w+\b", text))
-    print(words)
+    
 
     # Department queries
     if (

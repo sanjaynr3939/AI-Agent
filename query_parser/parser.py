@@ -75,6 +75,15 @@ CSV_COLUMNS = {
         "earning"
     ],
 
+
+    "age": [
+        "age",
+        "old",
+        "older",
+        "young",
+        "younger"
+    ],
+
     "employee": [
         "employee",
         "employees"
@@ -100,15 +109,16 @@ COMPARISON_WORDS = {
         "greater",
         "more",
         "above",
-        "over"
+        "over",
+        "older"
     ],
 
     "less_than": [
         "less",
         "below",
-        "under"
+        "under",
+        "younger"
     ]
-
 }
 
 def parse_query(text):

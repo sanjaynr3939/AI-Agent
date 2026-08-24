@@ -138,6 +138,44 @@ def analyze_csv(file_path, question):
             return "No employees found."
 
         return filtered.to_string(index=False)
+    
+    # -------------------------
+    # Age Greater Than
+    # -------------------------
+
+    if (
+        parsed["column"] == "age"
+        and
+        parsed["comparison"] == "greater_than"
+    ):
+
+        filtered = df[
+            df["Age"] > parsed["value"]
+        ]
+
+        if filtered.empty:
+            return "No employees found."
+
+        return filtered.to_string(index=False)
+    
+    # -------------------------
+    # Age Less Than
+    # -------------------------
+
+    if (
+        parsed["column"] == "age"
+        and
+        parsed["comparison"] == "less_than"
+    ):
+
+        filtered = df[
+            df["Age"] < parsed["value"]
+        ]
+
+        if filtered.empty:
+            return "No employees found."
+
+        return filtered.to_string(index=False)
 
     # -------------------------
     # Summary

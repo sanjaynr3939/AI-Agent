@@ -17,6 +17,9 @@ def analyze_csv(file_path, question):
 
     question = question.lower()
     parsed = parse_query(question)
+    # print(parsed)
+    # print("Reached CSV Tool")
+    # print("Name =", parsed["name"])
     
 
 
@@ -26,8 +29,7 @@ def analyze_csv(file_path, question):
 
     if (
         parsed["action"] == "highest"
-        and
-        parsed["column"] == "salary"
+        and parsed["column"] == "salary"
     ):
 
         employee = df.loc[df["Salary"].idxmax()]
@@ -35,7 +37,7 @@ def analyze_csv(file_path, question):
         return (
             f'{employee["Name"]} is the highest paid employee '
             f'with a salary of ₹{employee["Salary"]}.'
-        )
+    )
 
         # -------------------------
         # Lowest Salary
@@ -80,26 +82,36 @@ def analyze_csv(file_path, question):
         total = df["Salary"].sum()
 
         return f"The total salary is ₹{total}."
-    
+        # -------------------------
+    # Employee Name Search
+    # -------------------------
+    # print("Checking Name Search")
+    if parsed["name"] is not None:
+
+        filtered = df[
+            df["Name"].str.lower() == parsed["name"].lower()
+        ]
+
+        if filtered.empty:
+            return "Employee not found."
+
+        return filtered.to_string(index=False)
 
     # -------------------------
     # Department Filter
     # -------------------------
 
-    if (
-        parsed["action"] == "filter"
-        and
-        parsed["column"] == "department"
-    ):
+    if parsed["department"] is not None:
 
         filtered = df[
-            df["Department"].str.upper() == parsed["value"]
+            df["Department"].str.upper() == parsed["department"]
         ]
 
         if filtered.empty:
             return "No employees found."
 
         return filtered.to_string(index=False)
+
 
     # -------------------------
     # Salary Greater Than
@@ -177,6 +189,29 @@ def analyze_csv(file_path, question):
 
         return filtered.to_string(index=False)
 
+  
+    # -------------------------
+    # Sort
+    # -------------------------
+
+    if parsed["action"] == "sort":
+
+        mapping = {
+            "salary": "Salary",
+            "age": "Age",
+            "name": "Name"
+        }
+
+        if parsed["column"] in mapping:
+
+            return df.sort_values(
+                by=mapping[parsed["column"]]
+            ).to_string(index=False)
+
+   
+
+
+    
     # -------------------------
     # Summary
     # -------------------------
@@ -207,4 +242,13 @@ Lowest Salary  : {df["Salary"].min()}
 Total Salary   : {df["Salary"].sum()}
 """
 
-    return summary
+    if (
+        "summary" in question
+        or "describe" in question
+        or "statistics" in question
+        or "dataset" in question
+        or "info" in question
+    ):
+        return summary
+
+    return "Sorry, I couldn't understand the query."

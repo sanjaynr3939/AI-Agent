@@ -1,70 +1,34 @@
 import re
 
 # -----------------------------
-# Operation Keywords
+# Math Operations
 # -----------------------------
 
 OPERATIONS = {
-
-    "ADD": [
-        "sum",
-        "add",
-        "plus"
-    ],
-
-    "SUBTRACT": [
-        "sub",
-        "subtract",
-        "minus"
-    ],
-
-    "MULTIPLY": [
-        "multiply",
-        "product",
-        "times"
-    ],
-
-    "DIVIDE": [
-        "divide"
-    ],
-
-    "MOD": [
-        "mod",
-        "remainder"
-    ]
-
+    "ADD": ["sum", "add", "plus"],
+    "SUBTRACT": ["subtract", "minus", "sub"],
+    "MULTIPLY": ["multiply", "times", "product"],
+    "DIVIDE": ["divide"],
+    "MOD": ["mod", "remainder"]
 }
+
+# -----------------------------
+# CSV Actions
+# -----------------------------
 
 CSV_ACTIONS = {
-
-    "highest": [
-        "highest",
-        "maximum",
-        "top",
-        "most",
-        "best"
-    ],
-
-    "lowest": [
-        "lowest",
-        "minimum",
-        "least"
-    ],
-
-    "average": [
-        "average",
-        "mean"
-    ],
-
-    "total": [
-        "total",
-        "sum"
-    ]
-
+    "highest": ["highest", "maximum", "top", "most", "best"],
+    "lowest": ["lowest", "minimum", "least"],
+    "average": ["average", "mean"],
+    "total": ["total", "sum"],
+    "sort": ["sort", "order", "arrange", "list"]
 }
 
-CSV_COLUMNS = {
+# -----------------------------
+# CSV Columns
+# -----------------------------
 
+CSV_COLUMNS = {
     "salary": [
         "salary",
         "paid",
@@ -75,7 +39,6 @@ CSV_COLUMNS = {
         "earning"
     ],
 
-
     "age": [
         "age",
         "old",
@@ -84,25 +47,49 @@ CSV_COLUMNS = {
         "younger"
     ],
 
-    "employee": [
-        "employee",
-        "employees"
-    ],
-
     "department": [
         "department"
-    ]
+    ],
 
+    "name": [
+        "name"
+    ],
+
+    "employee": [
+        "employee",
+        "employees",
+        "staff"
+    ]
 }
 
-DEPARTMENTS = [
+# -----------------------------
+# Departments
+# -----------------------------
 
+DEPARTMENTS = [
     "it",
     "hr",
     "sales",
-    "finance"
-
+    "finance",
+    "marketing"
 ]
+
+# -----------------------------
+# Employee Names
+# -----------------------------
+
+EMPLOYEE_NAMES = [
+    "ram",
+    "ravi",
+    "amit",
+    "priya",
+    "sneha"
+]
+
+# -----------------------------
+# Comparison
+# -----------------------------
+
 COMPARISON_WORDS = {
 
     "greater_than": [
@@ -121,136 +108,164 @@ COMPARISON_WORDS = {
     ]
 }
 
+
 def parse_query(text):
 
     text = text.lower()
 
     result = {
 
-    "numbers": [],
-    "operators": [],
-    "words": [],
-    "operation": None,
+        "numbers": [],
+        "operators": [],
+        "words": [],
 
-    "action": None,
-    "column": None,
-    "comparison": None,
-    "value": None,
-}
+        "operation": None,
 
-    # Extract numbers
+        "action": None,
+        "column": None,
+        "comparison": None,
+
+        "value": None,
+
+        "department": None,
+        "name": None
+
+    }
+
+    # -----------------------------
+    # Extract Numbers
+    # -----------------------------
+
     result["numbers"] = re.findall(r"\d+", text)
 
-    # Extract operator symbols
+    # -----------------------------
+    # Extract Operators
+    # -----------------------------
+
     result["operators"] = re.findall(r"[+\-*/%]", text)
 
-    # Extract words
+    # -----------------------------
+    # Extract Words
+    # -----------------------------
+
     result["words"] = re.findall(r"\b[a-z]+\b", text)
 
     # -----------------------------
-    # Detect operator symbols
+    # Symbol Operations
     # -----------------------------
 
     symbol_map = {
-
         "+": "ADD",
         "-": "SUBTRACT",
         "*": "MULTIPLY",
         "/": "DIVIDE",
         "%": "MOD"
-
     }
 
     if result["operators"]:
 
         result["operation"] = symbol_map[result["operators"][0]]
 
-    else:
+    # -----------------------------
+    # Word Operations
+    # -----------------------------
 
-        # Detect operation from words
+    if result["operation"] is None:
 
-        for operation, keywords in OPERATIONS.items():
+        for op, keywords in OPERATIONS.items():
 
-            for keyword in keywords:
+            if any(word in keywords for word in result["words"]):
 
-                if keyword in result["words"]:
-
-                    result["operation"] = operation
-
-                    break
-
-            if result["operation"]:
-
+                result["operation"] = op
                 break
 
+    # -----------------------------
+    # CSV Action
+    # -----------------------------
 
-        # -----------------------------
-        # Detect CSV Action
-        # -----------------------------
+    for action, keywords in CSV_ACTIONS.items():
 
-        for action, keywords in CSV_ACTIONS.items():
+        if any(word in keywords for word in result["words"]):
 
-            for keyword in keywords:
+            result["action"] = action
+            break
 
-                if keyword in result["words"]:
+    # -----------------------------
+    # Detect Salary Keywords FIRST
+    # -----------------------------
 
-                    result["action"] = action
-                    break
+    salary_words = CSV_COLUMNS["salary"]
 
-            if result["action"]:
-                break
+    if any(word in salary_words for word in result["words"]):
+        result["column"] = "salary"
 
+    # -----------------------------
+    # Detect Age
+    # -----------------------------
 
-        # -----------------------------
-        # Detect CSV Column
-        # -----------------------------
+    elif any(word in CSV_COLUMNS["age"] for word in result["words"]):
+        result["column"] = "age"
 
-        for column, keywords in CSV_COLUMNS.items():
+    # -----------------------------
+    # Detect Name
+    # -----------------------------
 
-            for keyword in keywords:
+    elif "name" in result["words"]:
+        result["column"] = "name"
 
-                if keyword in result["words"]:
+    # -----------------------------
+    # Detect Department
+    # -----------------------------
 
-                    result["column"] = column
-                    break
+    elif "department" in result["words"]:
+        result["column"] = "department"
 
-            if result["column"]:
-                break
+    # -----------------------------
+    # Detect Employee
+    # -----------------------------
 
-        # -----------------------------
-        # Detect Department
-        # -----------------------------
+    elif any(word in CSV_COLUMNS["employee"] for word in result["words"]):
+        result["column"] = "employee"
 
-        for department in DEPARTMENTS:
+    # -----------------------------
+    # Department Value
+    # -----------------------------
 
-            if department in result["words"]:
+    for dept in DEPARTMENTS:
 
-                result["action"] = "filter"
-                result["column"] = "department"
-                result["value"] = department.upper()
+        if dept in result["words"]:
 
-                break
+            result["department"] = dept.upper()
+            break
 
-        # -----------------------------
-        # Detect Comparison
-        # -----------------------------
+    # -----------------------------
+    # Comparison
+    # -----------------------------
 
-        for comparison, keywords in COMPARISON_WORDS.items():
+    for comp, keywords in COMPARISON_WORDS.items():
 
-            for keyword in keywords:
+        if any(word in keywords for word in result["words"]):
 
-                if keyword in result["words"]:
+            result["comparison"] = comp
+            break
 
-                    result["comparison"] = comparison
-                    break
+    # -----------------------------
+    # Numeric Value
+    # -----------------------------
 
-            if result["comparison"]:
-                break
-        # -----------------------------
-        # Detect Filter Value
-        # -----------------------------
+    if result["numbers"]:
 
-        if result["numbers"]:
+        result["value"] = int(result["numbers"][0])
 
-            result["value"] = int(result["numbers"][0])
+    # -----------------------------
+    # Employee Name
+    # -----------------------------
+
+    for word in result["words"]:
+
+        if word in EMPLOYEE_NAMES:
+
+            result["name"] = word.capitalize()
+            break
+
     return result

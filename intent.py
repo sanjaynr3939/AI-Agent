@@ -1,4 +1,5 @@
 import re
+from query_parser.parser import parse_query
 
 INTENTS = {
     "GREETING": {
@@ -103,6 +104,16 @@ def detect_intent(text):
     if words & INTENTS["DAY"]:
         return "DAY"
 
+    parsed = parse_query(text)
+
+    # Any parsed CSV query
+    if (
+        parsed["name"] is not None
+        or parsed["department"] is not None
+        or parsed["action"] is not None
+        or parsed["comparison"] is not None
+    ):
+        return "CSV"
     # Remaining intents
     for intent in ["GREETING", "MATH", "MEMORY", "CSV"]:
         if words & INTENTS[intent]:

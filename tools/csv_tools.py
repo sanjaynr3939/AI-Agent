@@ -208,7 +208,82 @@ def analyze_csv(file_path, question):
                 by=mapping[parsed["column"]]
             ).to_string(index=False)
 
-   
+        # -------------------------
+    # Count Employees
+    # -------------------------
+
+    if parsed["action"] == "count":
+
+        # Total employees
+        if parsed["column"] == "employee":
+            return f"Total employees: {len(df)}"
+
+        # Department count
+        if parsed["department"] is not None:
+            count = len(
+                df[
+                    df["Department"].str.upper()
+                    == parsed["department"]
+                ]
+            )
+
+            return f"{parsed['department']} employees: {count}"
+
+        # Salary greater than
+        if (
+            parsed["column"] == "salary"
+            and parsed["comparison"] == "greater_than"
+        ):
+
+            count = len(
+                df[
+                    df["Salary"] > parsed["value"]
+                ]
+            )
+
+            return f"Employees earning more than ₹{parsed['value']}: {count}"
+
+        # Salary less than
+        if (
+            parsed["column"] == "salary"
+            and parsed["comparison"] == "less_than"
+        ):
+
+            count = len(
+                df[
+                    df["Salary"] < parsed["value"]
+                ]
+            )
+
+            return f"Employees earning less than ₹{parsed['value']}: {count}"
+
+        # Age greater than
+        if (
+            parsed["column"] == "age"
+            and parsed["comparison"] == "greater_than"
+        ):
+
+            count = len(
+                df[
+                    df["Age"] > parsed["value"]
+                ]
+            )
+
+            return f"Employees older than {parsed['value']}: {count}"
+
+        # Age less than
+        if (
+            parsed["column"] == "age"
+            and parsed["comparison"] == "less_than"
+        ):
+
+            count = len(
+                df[
+                    df["Age"] < parsed["value"]
+                ]
+            )
+
+            return f"Employees younger than {parsed['value']}: {count}"
 
 
     

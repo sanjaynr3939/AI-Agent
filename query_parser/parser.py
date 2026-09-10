@@ -17,22 +17,48 @@ OPERATIONS = {
 # -----------------------------
 
 CSV_ACTIONS = {
+    "highest": [
+        "highest",
+        "maximum",
+        "top",
+        "most",
+        "best"
+    ],
 
-    "highest": [...],
+    "lowest": [
+        "lowest",
+        "minimum",
+        "least"
+    ],
 
-    "lowest": [...],
+    "average": [
+        "average",
+        "mean"
+    ],
 
-    "average": [...],
+    "total": [
+        "total",
+        "sum"
+    ],
 
-    "total": [...],
-
-    "sort": [...],
+    "sort": [
+        "sort",
+        "order",
+        "arrange",
+        "list"
+    ],
 
     "count": [
         "count",
         "many",
         "number"
-    ]
+    ],
+    "show": [
+      "show",
+        "list",
+        "display",
+        "give"
+    ] 
 }
 
 # -----------------------------

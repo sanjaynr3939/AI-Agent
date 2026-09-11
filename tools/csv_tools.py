@@ -98,6 +98,49 @@ def analyze_csv(file_path, question):
         return filtered.to_string(index=False)
 
     # -------------------------
+    # Combined Department + Comparison Filter
+    # -------------------------
+
+    if (
+        parsed["department"] is not None
+        and parsed["comparison"] is not None
+        and parsed["column"] in ["salary", "age"]
+    ):
+
+        filtered = df[
+            df["Department"].str.upper() == parsed["department"]
+        ]
+
+        if parsed["column"] == "salary":
+
+            if parsed["comparison"] == "greater_than":
+                filtered = filtered[
+                    filtered["Salary"] > parsed["value"]
+                ]
+
+            elif parsed["comparison"] == "less_than":
+                filtered = filtered[
+                    filtered["Salary"] < parsed["value"]
+                ]
+
+        elif parsed["column"] == "age":
+
+            if parsed["comparison"] == "greater_than":
+                filtered = filtered[
+                    filtered["Age"] > parsed["value"]
+                ]
+
+            elif parsed["comparison"] == "less_than":
+                filtered = filtered[
+                    filtered["Age"] < parsed["value"]
+                ]
+
+        if filtered.empty:
+            return "No employees found."
+
+        return filtered.to_string(index=False)
+
+    # -------------------------
     # Department Filter
     # -------------------------
 

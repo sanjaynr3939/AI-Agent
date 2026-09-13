@@ -32,16 +32,35 @@ def analyze_csv(file_path, question):
         and parsed["column"] == "salary"
     ):
 
-        employee = df.loc[df["Salary"].idxmax()]
+        data = df
+
+        if parsed["department"] is not None:
+
+            data = df[
+                df["Department"].str.upper() == parsed["department"]
+            ]
+
+            if data.empty:
+                return "No employees found."
+
+            employee = data.loc[data["Salary"].idxmax()]
+
+            return (
+                f'{employee["Name"]} is the highest paid employee '
+                f'in {parsed["department"]} with a salary of '
+                f'₹{employee["Salary"]}.'
+            )
+
+        employee = data.loc[data["Salary"].idxmax()]
 
         return (
             f'{employee["Name"]} is the highest paid employee '
             f'with a salary of ₹{employee["Salary"]}.'
-    )
+        )
 
-        # -------------------------
-        # Lowest Salary
-        # -------------------------
+    # -------------------------
+    # Lowest Salary
+    # -------------------------
 
     if (
         parsed["action"] == "lowest"
@@ -49,7 +68,26 @@ def analyze_csv(file_path, question):
         parsed["column"] == "salary"
     ):
 
-        employee = df.loc[df["Salary"].idxmin()]
+        data = df
+
+        if parsed["department"] is not None:
+
+            data = df[
+                df["Department"].str.upper() == parsed["department"]
+            ]
+
+            if data.empty:
+                return "No employees found."
+
+            employee = data.loc[data["Salary"].idxmin()]
+
+            return (
+                f'{employee["Name"]} is the lowest paid employee '
+                f'in {parsed["department"]} with a salary of '
+                f'₹{employee["Salary"]}.'
+            )
+
+        employee = data.loc[data["Salary"].idxmin()]
 
         return (
             f'{employee["Name"]} is the lowest paid employee '
@@ -66,7 +104,21 @@ def analyze_csv(file_path, question):
         parsed["column"] == "salary"
     ):
 
-        average = df["Salary"].mean()
+        data = df
+
+        if parsed["department"] is not None:
+            data = df[
+                df["Department"].str.upper() == parsed["department"]
+            ]
+
+            if data.empty:
+                return "No employees found."
+
+            average = data["Salary"].mean()
+
+            return f"Average salary in {parsed['department']} is ₹{average:.2f}."
+
+        average = data["Salary"].mean()
 
         return f"The average salary is ₹{average:.2f}."
     # -------------------------
@@ -79,7 +131,22 @@ def analyze_csv(file_path, question):
         parsed["column"] == "salary"
     ):
 
-        total = df["Salary"].sum()
+        data = df
+
+        if parsed["department"] is not None:
+
+            data = df[
+                df["Department"].str.upper() == parsed["department"]
+            ]
+
+            if data.empty:
+                return "No employees found."
+
+            total = data["Salary"].sum()
+
+            return f"Total salary in {parsed['department']} is ₹{total}."
+
+        total = data["Salary"].sum()
 
         return f"The total salary is ₹{total}."
         # -------------------------
@@ -140,6 +207,7 @@ def analyze_csv(file_path, question):
 
         return filtered.to_string(index=False)
 
+
     # -------------------------
     # Department Filter
     # -------------------------
@@ -153,9 +221,18 @@ def analyze_csv(file_path, question):
         if filtered.empty:
             return "No employees found."
 
-        return filtered.to_string(index=False)
+        # Employee Count
+        if parsed["action"] == "count":
 
-     
+            count = len(filtered)
+
+            if count == 1:
+                return f"There is {count} employee in {parsed['department']}."
+
+            return f"There are {count} employees in {parsed['department']}."
+
+        return filtered.to_string(index=False)
+   
 
         # -------------------------
     # Department Salary Analytics
@@ -224,13 +301,18 @@ def analyze_csv(file_path, question):
                 f'(₹{emp["Salary"]}).'
             )
 
-        # Count Employees
+                # -------------------------
+        # Employee Count
+        # -------------------------
+
         if parsed["action"] == "count":
 
-            return (
-                f'{parsed["department"]} department has '
-                f'{len(dept_df)} employees.'
-            )
+            count = len(dept_df)
+
+            if count == 1:
+                return f"There is {count} employee in {parsed['department']}."
+
+            return f"There are {count} employees in {parsed['department']}."
      # -------------------------
     # List Employee Names
     # -------------------------

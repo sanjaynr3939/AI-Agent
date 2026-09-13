@@ -51,7 +51,8 @@ CSV_ACTIONS = {
     "count": [
         "count",
         "many",
-        "number"
+        "number",
+        "how many"
     ],
     "show": [
       "show",

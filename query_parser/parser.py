@@ -22,13 +22,15 @@ CSV_ACTIONS = {
         "maximum",
         "top",
         "most",
-        "best"
+        "best",
+        "oldest"
     ],
 
     "lowest": [
         "lowest",
         "minimum",
-        "least"
+        "least",
+        "youngest"
     ],
 
     "average": [
@@ -81,8 +83,10 @@ CSV_COLUMNS = {
         "age",
         "old",
         "older",
+        "oldest",
         "young",
-        "younger"
+        "younger",
+        "youngest"
     ],
 
     "department": [

@@ -57,7 +57,39 @@ def analyze_csv(file_path, question):
             f'{employee["Name"]} is the highest paid employee '
             f'with a salary of ₹{employee["Salary"]}.'
         )
+        # -------------------------
+    # Highest Age
+    # -------------------------
 
+    if (
+        parsed["action"] == "highest"
+        and parsed["column"] == "age"
+    ):
+
+        employee = df.loc[df["Age"].idxmax()]
+
+        return (
+            f'{employee["Name"]} is the oldest employee '
+            f'with age {employee["Age"]}.'
+        )
+    
+
+
+    # -------------------------
+    # Lowest Age
+    # -------------------------
+
+    if (
+        parsed["action"] == "lowest"
+        and parsed["column"] == "age"
+    ):
+
+        employee = df.loc[df["Age"].idxmin()]
+
+        return (
+            f'{employee["Name"]} is the youngest employee '
+            f'with age {employee["Age"]}.'
+        )
     # -------------------------
     # Lowest Salary
     # -------------------------

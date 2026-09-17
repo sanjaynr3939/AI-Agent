@@ -60,10 +60,14 @@ def analyze_csv(file_path, question):
         # -------------------------
     # Highest Age
     # -------------------------
+    # -------------------------
+    # Highest Age
+    # -------------------------
 
     if (
         parsed["action"] == "highest"
         and parsed["column"] == "age"
+        and parsed["department"] is None
     ):
 
         employee = df.loc[df["Age"].idxmax()]
@@ -82,6 +86,7 @@ def analyze_csv(file_path, question):
     if (
         parsed["action"] == "lowest"
         and parsed["column"] == "age"
+        and parsed["department"] is None
     ):
 
         employee = df.loc[df["Age"].idxmin()]
@@ -240,7 +245,7 @@ def analyze_csv(file_path, question):
         return filtered.to_string(index=False)
 
 
-    # -------------------------
+        # -------------------------
     # Department Filter
     # -------------------------
 
@@ -262,6 +267,38 @@ def analyze_csv(file_path, question):
                 return f"There is {count} employee in {parsed['department']}."
 
             return f"There are {count} employees in {parsed['department']}."
+
+        # Oldest Employee
+        if (
+            parsed["action"] == "highest"
+            and parsed["column"] == "age"
+        ):
+
+            emp = filtered.loc[
+                filtered["Age"].idxmax()
+            ]
+
+            return (
+                f'{emp["Name"]} is the oldest employee '
+                f'in {parsed["department"]} '
+                f'with age {emp["Age"]}.'
+            )
+
+        # Youngest Employee
+        if (
+            parsed["action"] == "lowest"
+            and parsed["column"] == "age"
+        ):
+
+            emp = filtered.loc[
+                filtered["Age"].idxmin()
+            ]
+
+            return (
+                f'{emp["Name"]} is the youngest employee '
+                f'in {parsed["department"]} '
+                f'with age {emp["Age"]}.'
+            )
 
         return filtered.to_string(index=False)
    
@@ -357,178 +394,7 @@ def analyze_csv(file_path, question):
         names = "\n".join(df["Name"])
 
         return f"Employees:\n{names}"
-        
-    # # -------------------------
-    # # Salary Greater Than
-    # # -------------------------
-
-    # if (
-    #     parsed["column"] == "salary"
-    #     and
-    #     parsed["comparison"] == "greater_than"
-    # ):
-
-    #     filtered = df[
-    #         df["Salary"] > parsed["value"]
-    #     ]
-
-    #     if filtered.empty:
-    #         return "No employees found."
-
-    #     return filtered.to_string(index=False)
-
-    #     # -------------------------
-    # # Salary Lesser Than
-    # # -------------------------
-
-    # if (
-    #     parsed["column"] == "salary"
-    #     and
-    #     parsed["comparison"] == "less_than"
-    # ):
-
-    #     filtered = df[
-    #         df["Salary"] < parsed["value"]
-    #     ]
-
-    #     if filtered.empty:
-    #         return "No employees found."
-
-    #     return filtered.to_string(index=False)
     
-    # # -------------------------
-    # # Age Greater Than
-    # # -------------------------
-
-    # if (
-    #     parsed["column"] == "age"
-    #     and
-    #     parsed["comparison"] == "greater_than"
-    # ):
-
-    #     filtered = df[
-    #         df["Age"] > parsed["value"]
-    #     ]
-
-    #     if filtered.empty:
-    #         return "No employees found."
-
-    #     return filtered.to_string(index=False)
-    
-    # # -------------------------
-    # # Age Less Than
-    # # -------------------------
-
-    # if (
-    #     parsed["column"] == "age"
-    #     and
-    #     parsed["comparison"] == "less_than"
-    # ):
-
-    #     filtered = df[
-    #         df["Age"] < parsed["value"]
-    #     ]
-
-    #     if filtered.empty:
-    #         return "No employees found."
-
-    #     return filtered.to_string(index=False)
-
-  
-    # # -------------------------
-    # # Sort
-    # # -------------------------
-
-    # if parsed["action"] == "sort":
-
-    #     mapping = {
-    #         "salary": "Salary",
-    #         "age": "Age",
-    #         "name": "Name"
-    #     }
-
-    #     if parsed["column"] in mapping:
-
-    #         return df.sort_values(
-    #             by=mapping[parsed["column"]]
-    #         ).to_string(index=False)
-
-    #     # -------------------------
-    # # Count Employees
-    # # -------------------------
-
-    # if parsed["action"] == "count":
-
-    #     # Total employees
-    #     if parsed["column"] == "employee":
-    #         return f"Total employees: {len(df)}"
-
-    #     # Department count
-    #     if parsed["department"] is not None:
-    #         count = len(
-    #             df[
-    #                 df["Department"].str.upper()
-    #                 == parsed["department"]
-    #             ]
-    #         )
-
-    #         return f"{parsed['department']} employees: {count}"
-
-    #     # Salary greater than
-    #     if (
-    #         parsed["column"] == "salary"
-    #         and parsed["comparison"] == "greater_than"
-    #     ):
-
-    #         count = len(
-    #             df[
-    #                 df["Salary"] > parsed["value"]
-    #             ]
-    #         )
-
-    #         return f"Employees earning more than ₹{parsed['value']}: {count}"
-
-    #     # Salary less than
-    #     if (
-    #         parsed["column"] == "salary"
-    #         and parsed["comparison"] == "less_than"
-    #     ):
-
-    #         count = len(
-    #             df[
-    #                 df["Salary"] < parsed["value"]
-    #             ]
-    #         )
-
-    #         return f"Employees earning less than ₹{parsed['value']}: {count}"
-
-    #     # Age greater than
-    #     if (
-    #         parsed["column"] == "age"
-    #         and parsed["comparison"] == "greater_than"
-    #     ):
-
-    #         count = len(
-    #             df[
-    #                 df["Age"] > parsed["value"]
-    #             ]
-    #         )
-
-    #         return f"Employees older than {parsed['value']}: {count}"
-
-    #     # Age less than
-    #     if (
-    #         parsed["column"] == "age"
-    #         and parsed["comparison"] == "less_than"
-    #     ):
-
-    #         count = len(
-    #             df[
-    #                 df["Age"] < parsed["value"]
-    #             ]
-    #         )
-
-    #         return f"Employees younger than {parsed['value']}: {count}"
 
 
     
